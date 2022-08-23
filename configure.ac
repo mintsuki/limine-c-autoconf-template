@@ -21,7 +21,13 @@ if test "$werror_state" = "yes"; then
 fi
 
 AC_PROG_MKDIR_P
+case "$MKDIR_P" in
+    .*) MKDIR_P="$(cd "$(dirname "$MKDIR_P")" && pwd -P)/$(basename "$MKDIR_P")" ;;
+esac
 AC_PROG_INSTALL
+case "$INSTALL" in
+    .*) INSTALL="$(cd "$(dirname "$INSTALL")" && pwd -P)/$(basename "$INSTALL")" ;;
+esac
 
 AC_CHECK_PROG([FIND_FOUND], [find], [yes])
 if ! test "x$FIND_FOUND" = "xyes"; then
