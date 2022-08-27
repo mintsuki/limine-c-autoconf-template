@@ -55,6 +55,10 @@ override CROSS_LDFLAGS += \
     -z max-page-size=0x1000 \
     -T '$(call SHESCAPE,$(SRCDIR)/linker-$(ARCH).ld)'
 
+ifneq ($(CROSS_LD_NO_PIE_BUG),1)
+    override CROSS_LDFLAGS += -no-pie
+endif
+
 # Set archtecture specific variables (and check that the architecture is supported).
 ifeq ($(ARCH),x86_64)
     override CROSS_CFLAGS += \
