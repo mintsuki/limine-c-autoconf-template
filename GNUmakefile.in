@@ -42,9 +42,9 @@ override CROSS_CFLAGS += \
     -ffreestanding \
     -fno-stack-protector \
     -fno-stack-check \
+    -fno-lto \
     -fno-pie \
     -fno-pic \
-    -fno-lto \
     -MMD \
     -I'$(call SHESCAPE,$(SRCDIR))/freestanding-headers' \
     -I'$(call SHESCAPE,$(SRCDIR))'
