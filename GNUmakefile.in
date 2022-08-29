@@ -37,16 +37,17 @@ CROSS_LDFLAGS ?= @CROSS_LDFLAGS@
 
 # Internal C flags that should not be changed by the user.
 override CROSS_CFLAGS += \
-    -I'$(call SHESCAPE,$(SRCDIR))' \
-    -I'$(call SHESCAPE,$(SRCDIR))/freestanding-headers' \
     -std=c11 \
-    -ffreestanding \
     -nostdinc \
+    -ffreestanding \
     -fno-stack-protector \
     -fno-stack-check \
     -fno-pie \
     -fno-pic \
-    -MMD
+    -fno-lto \
+    -MMD \
+    -I'$(call SHESCAPE,$(SRCDIR))/freestanding-headers' \
+    -I'$(call SHESCAPE,$(SRCDIR))'
 
 # Internal linker flags that should not be changed by the user.
 override CROSS_LDFLAGS += \
