@@ -1,4 +1,4 @@
-AC_INIT([Limine Bare Bones], m4_esyscmd([./version.sh]), [https://github.com/mintsuki/limine-barebones-autotools/issues], [limine-barebones])
+AC_INIT([Limine Bare Bones], [m4_esyscmd([./version.sh])], [https://github.com/mintsuki/limine-barebones-autotools/issues], [limine-barebones])
 
 AC_PREREQ([2.69])
 
@@ -13,11 +13,8 @@ AC_SUBST([BUILDDIR])
 
 werror_state="no"
 AC_ARG_ENABLE([werror],
-    AS_HELP_STRING([--enable-werror], [treat warnings as errors]),
+    [AS_HELP_STRING([--enable-werror], [treat warnings as errors])],
     [werror_state="$enableval"])
-if test "$werror_state" = "yes"; then
-    AC_SUBST([WERROR], [-Werror])
-fi
 
 m4_define([DEFAULT_ARCH], [x86_64])
 AC_ARG_VAR([ARCH], [target architecture @<:@default: ]DEFAULT_ARCH[@:>@])
@@ -55,6 +52,9 @@ AC_SUBST([CROSS_FILE], [cross-files/$ARCH-elf-toolchain.mk])
 m4_define([DEFAULT_CROSS_CFLAGS], [-g -O2 -pipe -Wall -Wextra])
 AC_ARG_VAR([CROSS_CFLAGS], [cross C flags @<:@default: ]DEFAULT_CROSS_CFLAGS[@:>@])
 test "x$CROSS_CFLAGS" = "x" && CROSS_CFLAGS="DEFAULT_CROSS_CFLAGS"
+if test "$werror_state" = "yes"; then
+    CROSS_CFLAGS="$CROSS_CFLAGS -Werror"
+fi
 
 m4_define([DEFAULT_CROSS_CPPFLAGS], [])
 AC_ARG_VAR([CROSS_CPPFLAGS], [cross C preprocessor flags @<:@default: ]DEFAULT_CROSS_CPPFLAGS[@:>@])
@@ -63,6 +63,9 @@ test "x$CROSS_CPPFLAGS" = "x" && CROSS_CPPFLAGS="DEFAULT_CROSS_CPPFLAGS"
 #m4_define([DEFAULT_CROSS_NASMFLAGS], [-F dwarf -g])
 #AC_ARG_VAR([CROSS_NASMFLAGS], [cross nasm flags @<:@default: ]DEFAULT_CROSS_NASMFLAGS[@:>@])
 #test "x$CROSS_NASMFLAGS" = "x" && CROSS_NASMFLAGS="DEFAULT_CROSS_NASMFLAGS"
+#if test "$werror_state" = "yes"; then
+#    CROSS_NASMFLAGS="$CROSS_NASMFLAGS -Werror"
+#fi
 
 m4_define([DEFAULT_CROSS_LDFLAGS], [])
 AC_ARG_VAR([CROSS_LDFLAGS], [cross linker flags @<:@default: ]DEFAULT_CROSS_LDFLAGS[@:>@])
