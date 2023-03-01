@@ -13,8 +13,17 @@ static volatile struct limine_terminal_request terminal_request = {
 
 static void done(void) {
     for (;;) {
-        __asm__("hlt");
+        asm ("hlt");
     }
+}
+
+// Our quick and dirty strlen() implementation.
+size_t strlen(const char *str) {
+    size_t ret = 0;
+    while (*str++) {
+        ret++;
+    }
+    return ret;
 }
 
 // The following will be our kernel's entry point.
@@ -27,8 +36,10 @@ void _start(void) {
 
     // We should now be able to call the Limine terminal to print out
     // a simple "Hello World" to screen.
+    const char *hello_msg = "Hello World";
+
     struct limine_terminal *terminal = terminal_request.response->terminals[0];
-    terminal_request.response->write(terminal, "Hello World", 11);
+    terminal_request.response->write(terminal, hello_msg, strlen(hello_msg));
 
     // We're done, just hang...
     done();

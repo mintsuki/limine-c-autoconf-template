@@ -45,7 +45,7 @@ CROSS_LDFLAGS ?= @CROSS_LDFLAGS@
 
 # Internal C flags that should not be changed by the user.
 override CROSS_CFLAGS += \
-    -std=c11 \
+    -std=gnu11 \
     -nostdinc \
     -ffreestanding \
     -fno-stack-protector \
