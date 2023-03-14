@@ -4,6 +4,12 @@ AC_PREREQ([2.69])
 
 AC_CONFIG_AUX_DIR([build-aux])
 
+AC_DEFUN([PROG_ABSPATH], [
+    case "$$1" in
+        .*) $1="$(cd "$(dirname "$$1")" && pwd -P)/$(basename "$$1")" ;;
+    esac
+])
+
 SRCDIR="$(cd "$srcdir" && pwd -P)"
 BUILDDIR="$(pwd -P)"
 
@@ -20,7 +26,9 @@ AC_ARG_VAR([ARCH], [target architecture @<:@default: ]DEFAULT_ARCH[@:>@])
 test "x$ARCH" = "x" && ARCH="DEFAULT_ARCH"
 
 AC_PROG_MKDIR_P
+PROG_ABSPATH([MKDIR_P])
 AC_PROG_INSTALL
+PROG_ABSPATH([INSTALL])
 
 AC_CHECK_PROG([FIND_FOUND], [find], [yes])
 if ! test "x$FIND_FOUND" = "xyes"; then
