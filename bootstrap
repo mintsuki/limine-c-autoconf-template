@@ -7,7 +7,7 @@ test -z "$srcdir" && srcdir=.
 
 cd "$srcdir"
 
-[ -d cross-detect ] || git clone https://github.com/mintsuki/cross-detect.git
+[ -f freestanding-toolchain ] || ( curl -Lo freestanding-toolchain https://github.com/mintsuki/freestanding-toolchain/raw/trunk/freestanding-toolchain && chmod +x freestanding-toolchain )
 [ -d freestanding-headers ] || git clone https://github.com/mintsuki/freestanding-headers.git
 [ -d libgcc-binaries ] || git clone https://github.com/mintsuki/libgcc-binaries.git
 [ -f limine.h ] || curl -o limine.h https://raw.githubusercontent.com/limine-bootloader/limine/trunk/limine.h

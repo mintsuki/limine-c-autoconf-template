@@ -8,7 +8,7 @@
 *.tar.xz
 /bin
 /limine.h
-/cross-detect
+/freestanding-toolchain
 /cross-files
 /freestanding-headers
 /libgcc-binaries

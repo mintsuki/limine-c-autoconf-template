@@ -3,7 +3,6 @@ AC_INIT([Limine Bare Bones], [m4_esyscmd([./version.sh])], [https://github.com/m
 AC_PREREQ([2.69])
 
 AC_CONFIG_AUX_DIR([build-aux])
-AC_CONFIG_SUBDIRS([cross-detect])
 
 SRCDIR="$(cd "$srcdir" && pwd -P)"
 BUILDDIR="$(pwd -P)"
@@ -42,12 +41,9 @@ AC_ARG_VAR([CROSS_STRIP], [cross strip command])
 
 rm -rf "$BUILDDIR/cross-files"
 $MKDIR_P "$BUILDDIR/cross-files"
-(
-cd "$BUILDDIR/cross-files"
-TRIPLET="$ARCH"-elf WANT_CROSS_LD=yes WANT_CROSS_STRIP=yes "$SRCDIR/cross-detect/configure"
-) || exit 1
+ARCHITECTURE="$ARCH" WANT_CROSS_CC=yes WANT_CROSS_LD=yes WANT_CROSS_STRIP=yes "$SRCDIR/freestanding-toolchain" >"$BUILDDIR/cross-files/$ARCH-toolchain.mk"
 
-AC_SUBST([CROSS_FILE], [cross-files/$ARCH-elf-toolchain.mk])
+AC_SUBST([CROSS_FILE], [cross-files/$ARCH-toolchain.mk])
 
 m4_define([DEFAULT_CROSS_CFLAGS], [-g -O2 -pipe -Wall -Wextra])
 AC_ARG_VAR([CROSS_CFLAGS], [cross C flags @<:@default: ]DEFAULT_CROSS_CFLAGS[@:>@])
