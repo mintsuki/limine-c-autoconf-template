@@ -9,7 +9,7 @@
 /bin
 /limine.h
 /freestanding-toolchain
-/cross-files
+/toolchain-files
 /freestanding-headers
 /libgcc-binaries
 /build
