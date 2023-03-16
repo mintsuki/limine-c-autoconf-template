@@ -12,4 +12,9 @@ cd "$srcdir"
 [ -d libgcc-binaries ] || git clone https://github.com/mintsuki/libgcc-binaries.git
 [ -f limine.h ] || curl -o limine.h https://raw.githubusercontent.com/limine-bootloader/limine/trunk/limine.h
 
-autoreconf -fvi -Wall
+automake_libdir="$(automake --print-libdir)"
+
+mkdir -p build-aux
+cp "${automake_libdir}/install-sh" build-aux
+
+autoreconf -fvi
