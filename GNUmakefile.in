@@ -103,12 +103,13 @@ else
     $(error Architecture $(ARCH) not supported)
 endif
 
-# Use find to glob all *.c, *.S, and *.asm files in the directory and extract the object names.
-override CFILES := $(shell cd '$(call SHESCAPE,$(SRCDIR))' && find . -type f -name '*.c')
-override ASFILES := $(shell cd '$(call SHESCAPE,$(SRCDIR))' && find . -type f -name '*.S')
+# Use "find" to glob all *.c, *.S, and *.asm files in the tree and obtain the
+# object and header dependency file names.
+override CFILES := $(shell cd '$(call SHESCAPE,$(SRCDIR))' && find -L . -type f -name '*.c')
+override ASFILES := $(shell cd '$(call SHESCAPE,$(SRCDIR))' && find -L . -type f -name '*.S')
 override OBJ := $(addprefix $(call MKESCAPE,$(BUILDDIR))/,$(CFILES:.c=.o) $(ASFILES:.S=.o))
 #ifeq ($(ARCH),x86_64)
-#    override NASMFILES := $(shell cd '$(call SHESCAPE,$(SRCDIR))' && find . -type f -name '*.asm')
+#    override NASMFILES := $(shell cd '$(call SHESCAPE,$(SRCDIR))' && find -L . -type f -name '*.asm')
 #    override OBJ += $(addprefix $(call MKESCAPE,$(BUILDDIR))/,$(NASMFILES:.asm=.o))
 #endif
 override HEADER_DEPS := $(CFILES:.c=.d) $(ASFILES:.S=.d)
