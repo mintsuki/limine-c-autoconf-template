@@ -55,6 +55,9 @@ $(eval $(call DEFAULT_VAR,LDFLAGS,@LDFLAGS@))
 
 # Internal C flags that should not be changed by the user.
 override CFLAGS += \
+    -Wall \
+    -Wextra \
+    @WERROR_FLAG@ \
     -std=gnu11 \
     -nostdinc \
     -ffreestanding \
@@ -98,6 +101,8 @@ ifeq ($(ARCH),x86_64)
     override LDFLAGS += \
         -m elf_x86_64
 #    override NASMFLAGS += \
+#        -Wall \
+#        @WERROR_FLAG@ \
 #        -f elf64
     override LIBGCC := x86_64-no-red-zone
 else

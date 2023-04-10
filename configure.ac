@@ -14,6 +14,11 @@ werror_state="no"
 AC_ARG_ENABLE([werror],
     [AS_HELP_STRING([--enable-werror], [treat warnings as errors])],
     [werror_state="$enableval"])
+if test "$werror_state" = "yes"; then
+    AC_SUBST([WERROR_FLAG], [-Werror])
+else
+    AC_SUBST([WERROR_FLAG], [-Wno-error])
+fi
 
 m4_define([DEFAULT_ARCH], [x86_64])
 AC_ARG_VAR([ARCH], [target architecture @<:@default: ]DEFAULT_ARCH[@:>@])
@@ -61,12 +66,9 @@ ARCHITECTURE="$ARCH" \
 
 AC_SUBST([TOOLCHAIN_FILE], [toolchain-files/$ARCH-toolchain.mk])
 
-m4_define([DEFAULT_CFLAGS], [-g -O2 -pipe -Wall -Wextra])
+m4_define([DEFAULT_CFLAGS], [-g -O2 -pipe])
 AC_ARG_VAR([CFLAGS], [C flags @<:@default: ]DEFAULT_CFLAGS[@:>@])
 test "x$CFLAGS" = "x" && CFLAGS="DEFAULT_CFLAGS"
-if test "$werror_state" = "yes"; then
-    CFLAGS="$CFLAGS -Werror"
-fi
 
 m4_define([DEFAULT_CPPFLAGS], [])
 AC_ARG_VAR([CPPFLAGS], [C preprocessor flags @<:@default: ]DEFAULT_CPPFLAGS[@:>@])
@@ -75,9 +77,6 @@ test "x$CPPFLAGS" = "x" && CPPFLAGS="DEFAULT_CPPFLAGS"
 #m4_define([DEFAULT_NASMFLAGS], [-F dwarf -g])
 #AC_ARG_VAR([NASMFLAGS], [nasm flags @<:@default: ]DEFAULT_NASMFLAGS[@:>@])
 #test "x$NASMFLAGS" = "x" && NASMFLAGS="DEFAULT_NASMFLAGS"
-#if test "$werror_state" = "yes"; then
-#    NASMFLAGS="$NASMFLAGS -Werror"
-#fi
 
 m4_define([DEFAULT_LDFLAGS], [])
 AC_ARG_VAR([LDFLAGS], [linker flags @<:@default: ]DEFAULT_LDFLAGS[@:>@])
