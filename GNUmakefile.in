@@ -87,6 +87,11 @@ ifeq ($(LD_HAS_NO_PIE),yes)
     override LDFLAGS += -no-pie
 endif
 
+# Internal nasm flags that should not be changed by the user.
+#override NASMFLAGS += \
+#    -Wall \
+#    $(WERROR_FLAG)
+
 # Set archtecture specific variables (and check that the architecture is supported).
 ifeq ($(ARCH),x86_64)
     override CFLAGS += \
@@ -102,8 +107,6 @@ ifeq ($(ARCH),x86_64)
     override LDFLAGS += \
         -m elf_x86_64
 #    override NASMFLAGS += \
-#        -Wall \
-#        $(WERROR_FLAG) \
 #        -f elf64
     override LIBGCC := x86_64-no-red-zone
 else
