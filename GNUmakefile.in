@@ -50,10 +50,10 @@ $(eval $(call DEFAULT_VAR,CFLAGS,$(DEFAULT_CFLAGS)))
 # User controllable CPPFLAGS.
 $(eval $(call DEFAULT_VAR,CPPFLAGS,$(DEFAULT_CPPFLAGS)))
 
-#ifeq ($(ARCH),x86_64)
-#    # User controllable NASMFLAGS.
-#    $(eval $(call DEFAULT_VAR,NASMFLAGS,$(DEFAULT_NASMFLAGS)))
-#endif
+ifeq ($(ARCH),x86_64)
+    # User controllable NASMFLAGS.
+    $(eval $(call DEFAULT_VAR,NASMFLAGS,$(DEFAULT_NASMFLAGS)))
+endif
 
 # User controllable linker flags.
 $(eval $(call DEFAULT_VAR,LDFLAGS,$(DEFAULT_LDFLAGS)))
@@ -92,9 +92,9 @@ ifeq ($(LD_HAS_NO_PIE),yes)
 endif
 
 # Internal nasm flags that should not be changed by the user.
-#override NASMFLAGS += \
-#    -Wall \
-#    $(WERROR_FLAG)
+override NASMFLAGS += \
+    -Wall \
+    $(WERROR_FLAG)
 
 # Set archtecture specific variables (and check that the architecture is supported).
 ifeq ($(ARCH),x86_64)
@@ -110,8 +110,8 @@ ifeq ($(ARCH),x86_64)
         -mcmodel=kernel
     override LDFLAGS += \
         -m elf_x86_64
-#    override NASMFLAGS += \
-#        -f elf64
+    override NASMFLAGS += \
+        -f elf64
     override LIBGCC := x86_64-no-red-zone
 else
     $(error Architecture $(ARCH) not supported)
@@ -122,10 +122,10 @@ endif
 override CFILES := $(shell cd '$(call SHESCAPE,$(SRCDIR))' && find -L . -type f -name '*.c')
 override ASFILES := $(shell cd '$(call SHESCAPE,$(SRCDIR))' && find -L . -type f -name '*.S')
 override OBJ := $(addprefix $(call MKESCAPE,$(BUILDDIR))/,$(CFILES:.c=.o) $(ASFILES:.S=.o))
-#ifeq ($(ARCH),x86_64)
-#    override NASMFILES := $(shell cd '$(call SHESCAPE,$(SRCDIR))' && find -L . -type f -name '*.asm')
-#    override OBJ += $(addprefix $(call MKESCAPE,$(BUILDDIR))/,$(NASMFILES:.asm=.o))
-#endif
+ifeq ($(ARCH),x86_64)
+    override NASMFILES := $(shell cd '$(call SHESCAPE,$(SRCDIR))' && find -L . -type f -name '*.asm')
+    override OBJ += $(addprefix $(call MKESCAPE,$(BUILDDIR))/,$(NASMFILES:.asm=.o))
+endif
 override HEADER_DEPS := $(CFILES:.c=.d) $(ASFILES:.S=.d)
 
 # Default target.
@@ -150,12 +150,12 @@ $(call MKESCAPE,$(BUILDDIR))/%.o: $(call MKESCAPE,$(SRCDIR))/%.S
 	$(MKDIR_P) "$$(dirname '$(call SHESCAPE,$@)')"
 	$(CC) $(CFLAGS) $(CPPFLAGS) -c '$(call SHESCAPE,$<)' -o $@
 
-#ifeq ($(ARCH),x86_64)
-## Compilation rules for *.asm files.
-#$(call MKESCAPE,$(BUILDDIR))/%.o: $(call MKESCAPE,$(SRCDIR))/%.asm
-#	$(MKDIR_P) "$$(dirname '$(call SHESCAPE,$@)')"
-#	nasm $(NASMFLAGS) '$(call SHESCAPE,$<)' -o $@
-#endif
+ifeq ($(ARCH),x86_64)
+# Compilation rules for *.asm files.
+$(call MKESCAPE,$(BUILDDIR))/%.o: $(call MKESCAPE,$(SRCDIR))/%.asm
+	$(MKDIR_P) "$$(dirname '$(call SHESCAPE,$@)')"
+	nasm $(NASMFLAGS) '$(call SHESCAPE,$<)' -o $@
+endif
 
 # Remove object files and the final executable.
 .PHONY: clean
