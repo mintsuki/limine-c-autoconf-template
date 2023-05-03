@@ -91,10 +91,12 @@ ifeq ($(LD_HAS_NO_PIE),yes)
     override LDFLAGS += -no-pie
 endif
 
-# Internal nasm flags that should not be changed by the user.
-override NASMFLAGS += \
-    -Wall \
-    $(WERROR_FLAG)
+ifeq ($(ARCH),x86_64)
+    # Internal nasm flags that should not be changed by the user.
+    override NASMFLAGS += \
+        -Wall \
+        $(WERROR_FLAG)
+endif
 
 # Set archtecture specific variables (and check that the architecture is supported).
 ifeq ($(ARCH),x86_64)
@@ -182,7 +184,6 @@ dist:
 	rm -rf "$(PACKAGE_TARNAME)-$(PACKAGE_VERSION)"/freestanding-headers/.git
 	rm -rf "$(PACKAGE_TARNAME)-$(PACKAGE_VERSION)"/libgcc-binaries/.git
 	rm -rf "$(PACKAGE_TARNAME)-$(PACKAGE_VERSION)"/libgcc-binaries/.gitignore
-
 	libgcc_needed="x86_64-no-red-zone"; \
 	for f in $$libgcc_needed; do \
 		mv "$(PACKAGE_TARNAME)-$(PACKAGE_VERSION)/libgcc-binaries/libgcc-$$f.a" "$(PACKAGE_TARNAME)-$(PACKAGE_VERSION)/libgcc-binaries/libgcc-$$f.a.save"; \
@@ -191,7 +192,6 @@ dist:
 	for f in $$libgcc_needed; do \
 		mv "$(PACKAGE_TARNAME)-$(PACKAGE_VERSION)/libgcc-binaries/libgcc-$$f.a.save" "$(PACKAGE_TARNAME)-$(PACKAGE_VERSION)/libgcc-binaries/libgcc-$$f.a"; \
 	done
-
 	echo "$(PACKAGE_VERSION)" >"$(PACKAGE_TARNAME)-$(PACKAGE_VERSION)"/version
 	tar -Jcf "$(PACKAGE_TARNAME)-$(PACKAGE_VERSION)".tar.xz "$(PACKAGE_TARNAME)-$(PACKAGE_VERSION)"
 	tar -zcf "$(PACKAGE_TARNAME)-$(PACKAGE_VERSION)".tar.gz "$(PACKAGE_TARNAME)-$(PACKAGE_VERSION)"
