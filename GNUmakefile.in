@@ -128,7 +128,7 @@ override OBJ := $(addprefix $(call MKESCAPE,$(BUILDDIR))/,$(CFILES:.c=.c.o) $(AS
 #    override NASMFILES := $(shell cd '$(call SHESCAPE,$(SRCDIR))' && find -L . -type f -name '*.asm')
 #    override OBJ += $(addprefix $(call MKESCAPE,$(BUILDDIR))/,$(NASMFILES:.asm=.asm.o))
 #endif
-override HEADER_DEPS := $(CFILES:.c=.d) $(ASFILES:.S=.d)
+override HEADER_DEPS := $(CFILES:.c=.c.d) $(ASFILES:.S=.S.d)
 
 # Default target.
 .PHONY: all
