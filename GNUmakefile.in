@@ -74,7 +74,7 @@ override CFLAGS += \
 
 # Internal C preprocessor flags that should not be changed by the user.
 override CPPFLAGS := \
-    -I'$(call SHESCAPE,$(SRCDIR))/freestanding-headers' \
+    -isystem '$(call SHESCAPE,$(SRCDIR))/freestanding-headers' \
     -I'$(call SHESCAPE,$(SRCDIR))' \
     $(CPPFLAGS) \
     -MMD \
@@ -123,10 +123,10 @@ endif
 # object and header dependency file names.
 override CFILES := $(shell cd '$(call SHESCAPE,$(SRCDIR))' && find -L . -type f -name '*.c')
 override ASFILES := $(shell cd '$(call SHESCAPE,$(SRCDIR))' && find -L . -type f -name '*.S')
-override OBJ := $(addprefix $(call MKESCAPE,$(BUILDDIR))/,$(CFILES:.c=.o) $(ASFILES:.S=.o))
+override OBJ := $(addprefix $(call MKESCAPE,$(BUILDDIR))/,$(CFILES:.c=.c.o) $(ASFILES:.S=.S.o))
 #ifeq ($(ARCH),x86_64)
 #    override NASMFILES := $(shell cd '$(call SHESCAPE,$(SRCDIR))' && find -L . -type f -name '*.asm')
-#    override OBJ += $(addprefix $(call MKESCAPE,$(BUILDDIR))/,$(NASMFILES:.asm=.o))
+#    override OBJ += $(addprefix $(call MKESCAPE,$(BUILDDIR))/,$(NASMFILES:.asm=.asm.o))
 #endif
 override HEADER_DEPS := $(CFILES:.c=.d) $(ASFILES:.S=.d)
 
@@ -143,18 +143,18 @@ $(OUTPUT): $(OBJ) $(call MKESCAPE,$(SRCDIR))/libgcc-binaries/libgcc-$(LIBGCC).a
 -include $(HEADER_DEPS)
 
 # Compilation rules for *.c files.
-$(call MKESCAPE,$(BUILDDIR))/%.o: $(call MKESCAPE,$(SRCDIR))/%.c
+$(call MKESCAPE,$(BUILDDIR))/%.c.o: $(call MKESCAPE,$(SRCDIR))/%.c
 	$(MKDIR_P) "$$(dirname '$(call SHESCAPE,$@)')"
 	$(CC) $(CFLAGS) $(CPPFLAGS) -c '$(call SHESCAPE,$<)' -o $@
 
 # Compilation rules for *.S files.
-$(call MKESCAPE,$(BUILDDIR))/%.o: $(call MKESCAPE,$(SRCDIR))/%.S
+$(call MKESCAPE,$(BUILDDIR))/%.S.o: $(call MKESCAPE,$(SRCDIR))/%.S
 	$(MKDIR_P) "$$(dirname '$(call SHESCAPE,$@)')"
 	$(CC) $(CFLAGS) $(CPPFLAGS) -c '$(call SHESCAPE,$<)' -o $@
 
 #ifeq ($(ARCH),x86_64)
 ## Compilation rules for *.asm files.
-#$(call MKESCAPE,$(BUILDDIR))/%.o: $(call MKESCAPE,$(SRCDIR))/%.asm
+#$(call MKESCAPE,$(BUILDDIR))/%.asm.o: $(call MKESCAPE,$(SRCDIR))/%.asm
 #	$(MKDIR_P) "$$(dirname '$(call SHESCAPE,$@)')"
 #	nasm $(NASMFLAGS) '$(call SHESCAPE,$<)' -o $@
 #endif
