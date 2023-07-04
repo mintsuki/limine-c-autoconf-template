@@ -98,7 +98,7 @@ ifeq ($(ARCH),x86_64)
         -mno-sse2 \
         -mno-red-zone
     override LDFLAGS += \
-        -m elf_x86_64 \
+        -m elf_x86_64
 #    override NASMFLAGS += \
 #        -f elf64
     override LIBGCC := x86_64-no-red-zone
