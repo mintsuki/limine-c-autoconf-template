@@ -1,13 +1,14 @@
 *.o
-*.d
+*.dep
 *.a
 *.elf
 *.hdd
 *.iso
 *.tar.gz
 *.tar.xz
+/obj
 /bin
-/limine.h
+/src/limine.h
 /freestanding-toolchain
 /toolchain-files
 /freestanding-headers
