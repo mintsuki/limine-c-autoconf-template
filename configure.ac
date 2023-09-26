@@ -1,4 +1,4 @@
-AC_INIT([Limine Bare Bones], [m4_esyscmd([./version.sh])], [https://github.com/mintsuki/limine-barebones-autotools/issues], [limine-barebones])
+AC_INIT([Limine C Autoconf Template], [m4_esyscmd([./version.sh])], [https://github.com/mintsuki/limine-c-autoconf-template/issues], [limine-c-autoconf-template])
 
 AC_PREREQ([2.69])
 
