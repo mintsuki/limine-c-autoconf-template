@@ -10,6 +10,12 @@ BUILDDIR="$(pwd -P)"
 AC_SUBST([SRCDIR])
 AC_SUBST([BUILDDIR])
 
+AC_DEFUN([PROG_ABSPATH], [
+    case "$$1" in
+        .*) $1="$(cd "$(dirname "$$1")" && pwd -P)/$(basename "$$1")" ;;
+    esac
+])
+
 werror_state="no"
 AC_ARG_ENABLE([werror],
     [AS_HELP_STRING([--enable-werror], [treat warnings as errors])],
@@ -23,12 +29,6 @@ fi
 m4_define([DEFAULT_ARCH], [x86_64])
 AC_ARG_VAR([ARCH], [target architecture @<:@default: ]DEFAULT_ARCH[@:>@])
 test "x$ARCH" = "x" && ARCH="DEFAULT_ARCH"
-
-AC_DEFUN([PROG_ABSPATH], [
-    case "$$1" in
-        .*) $1="$(cd "$(dirname "$$1")" && pwd -P)/$(basename "$$1")" ;;
-    esac
-])
 
 AC_PROG_MKDIR_P
 PROG_ABSPATH([MKDIR_P])
