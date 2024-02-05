@@ -60,7 +60,7 @@ ARCHITECTURE="$ARCH" \
     FREESTANDING_LD="$LD" \
     WANT_FREESTANDING_STRIP=yes \
     FREESTANDING_STRIP="$STRIP" \
-    "$SRCDIR/freestanding-toolchain" 2>"toolchain-files/$ARCH-toolchain.mk" || exit 1
+    "$SRCDIR/build-aux/freestanding-toolchain/freestanding-toolchain" 2>"toolchain-files/$ARCH-toolchain.mk" || exit 1
 
 AC_SUBST([TOOLCHAIN_FILE], [toolchain-files/$ARCH-toolchain.mk])
 

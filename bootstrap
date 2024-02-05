@@ -7,14 +7,38 @@ test -z "$srcdir" && srcdir=.
 
 cd "$srcdir"
 
-[ -f freestanding-toolchain ] || ( curl -Lo freestanding-toolchain https://github.com/mintsuki/freestanding-toolchain/raw/trunk/freestanding-toolchain && chmod +x freestanding-toolchain )
-[ -d freestanding-headers ] || git clone https://github.com/mintsuki/freestanding-headers.git --depth=1
-[ -d libgcc-binaries ] || git clone https://github.com/mintsuki/libgcc-binaries.git --depth=1
+FREESTANDING_TOOLCHAIN_COMMIT_HASH=18a5e52483344e117d45738c9afb2b34792cbced
+FREESTANDING_HEADERS_COMMIT_HASH=dd3abd2d7147efc4170dff478d3b7730bed14147
+CC_RUNTIME_COMMIT_HASH=38942e9a0d11af77c5d9fb45794850f7a1565d2b
+
+clone_repo_commit() {
+    if [ -d $2/.git ]; then
+        git -C $2 reset --hard
+        git -C $2 clean -fd
+        if ! git -C $2 checkout $3; then
+            rm -rf $2
+        fi
+    fi
+    if ! [ -d $2 ]; then
+        git clone $1 $2
+        git -C $2 checkout $3
+    fi
+}
+
+clone_repo_commit https://github.com/mintsuki/freestanding-toolchain.git build-aux/freestanding-toolchain $FREESTANDING_TOOLCHAIN_COMMIT_HASH
+clone_repo_commit https://github.com/mintsuki/freestanding-headers.git freestanding-headers $FREESTANDING_HEADERS_COMMIT_HASH
+clone_repo_commit https://github.com/mintsuki/cc-runtime.git src/cc-runtime $CC_RUNTIME_COMMIT_HASH
+
 [ -f src/limine.h ] || curl -Lo src/limine.h https://github.com/limine-bootloader/limine/raw/trunk/limine.h
 
-AUTOMAKE_LIBDIR="$(automake --print-libdir)"
-cp "${AUTOMAKE_LIBDIR}/INSTALL" ./
-mkdir -p build-aux
-cp "${AUTOMAKE_LIBDIR}/install-sh" build-aux/
-
 autoreconf -fvi -Wall
+
+# Older versions of autoreconf have a bug where they do not
+# install auxiliary files, sometimes... Check if that is the
+# case and work around...
+for auxfile in install-sh; do
+    if ! [ -f build-aux/$auxfile ]; then
+        mkdir -p build-aux
+        cp -v "$(automake --print-libdir)/$auxfile" build-aux/
+    fi
+done

@@ -6,14 +6,12 @@
 /build
 /GNUmakefile
 /autom4te.cache
-/INSTALL
 /build-aux
 /config.log
 /config.status
 /configure
 /*~
 /src/limine.h
-/freestanding-toolchain
 /toolchain-files
 /freestanding-headers
-/libgcc-binaries
+/src/cc-runtime
