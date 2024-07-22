@@ -24,9 +24,9 @@ else
     AC_SUBST([WERROR_FLAG], [-Wno-error])
 fi
 
-m4_define([DEFAULT_ARCH], [x86_64])
-AC_ARG_VAR([ARCH], [target architecture @<:@default: ]DEFAULT_ARCH[@:>@])
-test "x$ARCH" = "x" && ARCH="DEFAULT_ARCH"
+m4_define([DEFAULT_KARCH], [x86_64])
+AC_ARG_VAR([KARCH], [target architecture @<:@default: ]DEFAULT_KARCH[@:>@])
+test "x$KARCH" = "x" && KARCH="DEFAULT_KARCH"
 
 AC_PROG_MKDIR_P
 PROG_ABSPATH([MKDIR_P])
@@ -38,47 +38,48 @@ if ! test "x$FIND_FOUND" = "xyes"; then
     AC_MSG_ERROR([find not found, please install find before configuring])
 fi
 
-#if test "x$ARCH" = "xx86_64"; then
+#if test "x$KARCH" = "xx86_64"; then
 #    AC_CHECK_PROG([NASM_FOUND], [nasm], [yes])
 #    if ! test "x$NASM_FOUND" = "xyes"; then
 #        AC_MSG_ERROR([nasm not found, please install nasm before configuring])
 #    fi
 #fi
 
-AC_ARG_VAR([TOOLCHAIN], [alternative toolchain prefix (or 'llvm', or 'gnu')])
-AC_ARG_VAR([CC], [C compiler command])
-AC_ARG_VAR([LD], [linker command])
-AC_ARG_VAR([STRIP], [strip command])
+AC_ARG_VAR([KTOOLCHAIN], [alternative toolchain prefix (or 'llvm', or 'gnu')])
+AC_ARG_VAR([KCC], [C compiler command])
+AC_ARG_VAR([KLD], [linker command])
+AC_ARG_VAR([KSTRIP], [strip command])
 
 rm -rf toolchain-files
 $MKDIR_P toolchain-files
-ARCHITECTURE="$ARCH" \
-    FREESTANDING_TOOLCHAIN="$TOOLCHAIN" \
+ARCHITECTURE="$KARCH" \
+    FREESTANDING_TOOLCHAIN_PREFIX="K" \
+    FREESTANDING_TOOLCHAIN="$KTOOLCHAIN" \
     WANT_FREESTANDING_CC=yes \
-    FREESTANDING_CC="$CC" \
+    FREESTANDING_CC="$KCC" \
     WANT_FREESTANDING_LD=yes \
-    FREESTANDING_LD="$LD" \
+    FREESTANDING_LD="$KLD" \
     WANT_FREESTANDING_STRIP=yes \
-    FREESTANDING_STRIP="$STRIP" \
-    "$SRCDIR/build-aux/freestanding-toolchain/freestanding-toolchain" 2>"toolchain-files/$ARCH-toolchain.mk" || exit 1
+    FREESTANDING_STRIP="$KSTRIP" \
+    "$SRCDIR/build-aux/freestanding-toolchain/freestanding-toolchain" 2>"toolchain-files/$KARCH-toolchain.mk" || exit 1
 
-AC_SUBST([TOOLCHAIN_FILE], [toolchain-files/$ARCH-toolchain.mk])
+AC_SUBST([TOOLCHAIN_FILE], [toolchain-files/$KARCH-toolchain.mk])
 
-m4_define([DEFAULT_CFLAGS], [-g -O2 -pipe])
-AC_ARG_VAR([CFLAGS], [C flags @<:@default: ]DEFAULT_CFLAGS[@:>@])
-test "x$CFLAGS" = "x" && CFLAGS="DEFAULT_CFLAGS"
+m4_define([DEFAULT_KCFLAGS], [-g -O2 -pipe])
+AC_ARG_VAR([KCFLAGS], [C flags @<:@default: ]DEFAULT_KCFLAGS[@:>@])
+test "x$KCFLAGS" = "x" && KCFLAGS="DEFAULT_KCFLAGS"
 
-m4_define([DEFAULT_CPPFLAGS], [])
-AC_ARG_VAR([CPPFLAGS], [C preprocessor flags @<:@default: ]DEFAULT_CPPFLAGS[@:>@])
-test "x$CPPFLAGS" = "x" && CPPFLAGS="DEFAULT_CPPFLAGS"
+m4_define([DEFAULT_KCPPFLAGS], [])
+AC_ARG_VAR([KCPPFLAGS], [C preprocessor flags @<:@default: ]DEFAULT_KCPPFLAGS[@:>@])
+test "x$KCPPFLAGS" = "x" && KCPPFLAGS="DEFAULT_KCPPFLAGS"
 
-#m4_define([DEFAULT_NASMFLAGS], [-F dwarf -g])
-#AC_ARG_VAR([NASMFLAGS], [nasm flags @<:@default: ]DEFAULT_NASMFLAGS[@:>@])
-#test "x$NASMFLAGS" = "x" && NASMFLAGS="DEFAULT_NASMFLAGS"
+#m4_define([DEFAULT_KNASMFLAGS], [-F dwarf -g])
+#AC_ARG_VAR([KNASMFLAGS], [nasm flags @<:@default: ]DEFAULT_KNASMFLAGS[@:>@])
+#test "x$KNASMFLAGS" = "x" && KNASMFLAGS="DEFAULT_KNASMFLAGS"
 
-m4_define([DEFAULT_LDFLAGS], [])
-AC_ARG_VAR([LDFLAGS], [linker flags @<:@default: ]DEFAULT_LDFLAGS[@:>@])
-test "x$LDFLAGS" = "x" && LDFLAGS="DEFAULT_LDFLAGS"
+m4_define([DEFAULT_KLDFLAGS], [])
+AC_ARG_VAR([KLDFLAGS], [linker flags @<:@default: ]DEFAULT_KLDFLAGS[@:>@])
+test "x$KLDFLAGS" = "x" && KLDFLAGS="DEFAULT_KLDFLAGS"
 
 AC_PREFIX_DEFAULT([/usr/local])
 
