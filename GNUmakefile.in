@@ -53,6 +53,8 @@ override KCFLAGS += \
     -std=gnu11 \
     -nostdinc \
     -ffreestanding \
+    -ffunction-sections \
+    -fdata-sections \
     -fno-stack-protector \
     -fno-stack-check \
     -fno-lto \
@@ -97,6 +99,7 @@ override KLDFLAGS += \
     -pie \
     -z text \
     -z max-page-size=0x1000 \
+    -gc-sections \
     -T '$(call SHESCAPE,$(SRCDIR)/linker-$(KARCH).ld)'
 
 # Use "find" to glob all *.c, *.S, and *.asm files in the tree and obtain the
