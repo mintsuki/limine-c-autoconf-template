@@ -36,9 +36,9 @@ clone_repo_commit() {
 }
 
 if ! test -f version; then
-    clone_repo_commit https://github.com/mintsuki/freestanding-toolchain.git build-aux/freestanding-toolchain $FREESTANDING_TOOLCHAIN_COMMIT_HASH
-    clone_repo_commit https://github.com/mintsuki/freestanding-headers.git freestanding-headers $FREESTANDING_HEADERS_COMMIT_HASH
-    clone_repo_commit https://github.com/mintsuki/cc-runtime.git src/cc-runtime $CC_RUNTIME_COMMIT_HASH
+    clone_repo_commit https://github.com/osdev0/freestanding-toolchain.git build-aux/freestanding-toolchain $FREESTANDING_TOOLCHAIN_COMMIT_HASH
+    clone_repo_commit https://github.com/osdev0/freestanding-headers.git freestanding-headers $FREESTANDING_HEADERS_COMMIT_HASH
+    clone_repo_commit https://github.com/osdev0/cc-runtime.git src/cc-runtime $CC_RUNTIME_COMMIT_HASH
 
     [ -f src/limine.h ] || curl -Lo src/limine.h https://github.com/limine-bootloader/limine/raw/trunk/limine.h
 fi
