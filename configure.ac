@@ -24,9 +24,8 @@ else
     AC_SUBST([WERROR_FLAG], [-Wno-error])
 fi
 
-m4_define([DEFAULT_KARCH], [x86_64])
-AC_ARG_VAR([KARCH], [target architecture @<:@default: ]DEFAULT_KARCH[@:>@])
-test "x$KARCH" = "x" && KARCH="DEFAULT_KARCH"
+AC_ARG_VAR([KARCH], [target architecture])
+test "x${KARCH+set}" = "x" && KARCH="x86_64"
 
 AC_PROG_MKDIR_P
 PROG_ABSPATH([MKDIR_P])
@@ -61,25 +60,33 @@ ARCHITECTURE="$KARCH" \
     FREESTANDING_LD="$KLD" \
     WANT_FREESTANDING_STRIP=yes \
     FREESTANDING_STRIP="$KSTRIP" \
-    "$SRCDIR/build-aux/freestanding-toolchain/freestanding-toolchain" 2>"toolchain-files/$KARCH-toolchain.mk" || exit 1
+    "$SRCDIR/build-aux/freestanding-toolchain" 2>"toolchain-files/$KARCH-toolchain.mk" || exit 1
 
 AC_SUBST([TOOLCHAIN_FILE], [toolchain-files/$KARCH-toolchain.mk])
 
-m4_define([DEFAULT_KCFLAGS], [-g -O2 -pipe])
-AC_ARG_VAR([KCFLAGS], [C flags @<:@default: ]DEFAULT_KCFLAGS[@:>@])
-test "x$KCFLAGS" = "x" && KCFLAGS="DEFAULT_KCFLAGS"
+AC_ARG_VAR([CFLAGS], [C flags])
+test "x${CFLAGS+set}" = "x" && CFLAGS="-g -O2 -pipe"
 
-m4_define([DEFAULT_KCPPFLAGS], [])
-AC_ARG_VAR([KCPPFLAGS], [C preprocessor flags @<:@default: ]DEFAULT_KCPPFLAGS[@:>@])
-test "x$KCPPFLAGS" = "x" && KCPPFLAGS="DEFAULT_KCPPFLAGS"
+BORROWED_CFLAGS=""
+for cflag in $CFLAGS; do
+    case $cflag in
+        -O*|-pipe|-g|-f*-prefix-map*)
+            BORROWED_CFLAGS="$BORROWED_CFLAGS $cflag"
+            ;;
+    esac
+done
 
-#m4_define([DEFAULT_KNASMFLAGS], [-F dwarf -g])
-#AC_ARG_VAR([KNASMFLAGS], [nasm flags @<:@default: ]DEFAULT_KNASMFLAGS[@:>@])
-#test "x$KNASMFLAGS" = "x" && KNASMFLAGS="DEFAULT_KNASMFLAGS"
+AC_ARG_VAR([KCFLAGS], [C flags])
+test "x${KCFLAGS+set}" = "x" && KCFLAGS="$BORROWED_CFLAGS"
 
-m4_define([DEFAULT_KLDFLAGS], [])
-AC_ARG_VAR([KLDFLAGS], [linker flags @<:@default: ]DEFAULT_KLDFLAGS[@:>@])
-test "x$KLDFLAGS" = "x" && KLDFLAGS="DEFAULT_KLDFLAGS"
+AC_ARG_VAR([KCPPFLAGS], [C preprocessor flags])
+test "x${KCPPFLAGS+set}" = "x" && KCPPFLAGS=""
+
+#AC_ARG_VAR([KNASMFLAGS], [nasm flags])
+#test "x${KNASMFLAGS+set}" = "x" && KNASMFLAGS="-F dwarf -g"
+
+AC_ARG_VAR([KLDFLAGS], [linker flags])
+test "x${KLDFLAGS+set}" = "x" && KLDFLAGS=""
 
 AC_PREFIX_DEFAULT([/usr/local])
 
